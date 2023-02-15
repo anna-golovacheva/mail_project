@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -142,7 +142,6 @@ EMAIL_HOST_USER = 'fuckup@oscarbot.ru'
 EMAIL_HOST_PASSWORD = 'AsTSNVv7pun9'
 EMAIL_USE_SSL = True
 
-
 CRONJOBS = [
-    ('*/5 * * * *', 'myapp.cron.my_scheduled_job')
+    ('*/1 * * * *', 'mail_app.cron.my_scheduled_job')
 ]

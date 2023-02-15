@@ -1,13 +1,16 @@
-from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, \
     DeleteView
 from django.urls import reverse_lazy, reverse
-
-from mail_app.models import Mailing, Client
+from mail_app.models import Mailing, Client, MailingAttempt
 
 
 class MailingListView(ListView):
     model = Mailing
+
+
+class MailingAttemptListView(ListView):
+    model = MailingAttempt
+    template_name = 'mail_app/mailing_attempt_list.html'
 
 
 class MailingDetailView(DetailView):
@@ -23,7 +26,10 @@ class MailingCreateView(CreateView):
 class MailingUpdateView(UpdateView):
     model = Mailing
     fields = ('time', 'frequency')
-    success_url = reverse_lazy('mail_app:index')
+
+    def get_success_url(self):
+        pk = self.kwargs['pk']
+        return reverse('mail_app:update_mailing', kwargs={'pk': pk})
 
 
 class MailingDeleteView(DeleteView):
