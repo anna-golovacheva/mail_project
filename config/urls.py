@@ -18,9 +18,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path, include
 
+from mail_app.views import IndexTemplateView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mail_app.urls', namespace='mail_app')),
+    path('start/', IndexTemplateView.as_view(), name='index'),
+    path('mail_app/', include('mail_app.urls', namespace='mail_app')),
+    path('users/', include('users.urls', namespace='users')),
+    path('blog/', include('blog.urls', namespace='blog')),
 ]
 
 if settings.DEBUG:

@@ -1,11 +1,14 @@
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {'blank': True, 'null': True}
 
 
 class Client(models.Model):
     email = models.EmailField(max_length=50, verbose_name='Email')
     full_name = models.CharField(max_length=100, verbose_name='ФИО')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE)
     comments = models.CharField(max_length=500, **NULLABLE, verbose_name='Комментарии')
 
     class Meta:
@@ -18,7 +21,8 @@ class Client(models.Model):
 
 class Message(models.Model):
     topic = models.CharField(max_length=150, verbose_name='Тема')
-    body = models.CharField(max_length=500, verbose_name='Тело сообщения')
+    body = models.CharField(max_length=500, verbose_name='Текст сообщения')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE)
 
     class Meta:
         verbose_name = 'Сообщение'
@@ -52,13 +56,20 @@ class Mailing(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=CREATED, verbose_name='Статус рассылки')
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
     recipient = models.ManyToManyField(Client)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, **NULLABLE)
 
     class Meta:
-        verbose_name = 'Клиент'
-        verbose_name_plural = 'Клиенты'
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
+        permissions = [
+            (
+                'set_status',
+                'Can finish mailing'
+            ),
+        ]
 
     def __str__(self):
-        return f'{str(self.id)}. Рассылка в {str(self.time)} - {self.status}.'
+        return f'{str(self.id)}. Рассылка {self.owner.full_name} в {str(self.time)} - {self.status}.'
 
 
 class MailingAttempt(models.Model):
